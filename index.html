@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas y visualción del nivelatorio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+    <!-- MathJax para renderizar LaTeX (si lo necesitas para las definiciones) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <style>
+        body {
+            display: flex;
+            font-family: sans-serif;
+            height: 100vh;
+            margin: 0;
+        }
+        #sidebar {
+            width: 440px; /* Ancho ajustado para mejor visualización de los nombres */
+            background-color: #f8f9fa;
+            padding: 20px;
+            height: 100%;
+            overflow-y: auto;
+            border-right: 1px solid #dee2e6;
+        }
+        #sidebar h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #sidebar ul li button {
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background-color: #28a745; /* Un color diferente para este conjunto de herramientas */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #sidebar ul li button:hover {
+            background-color: #218838;
+        }
+        #sidebar ul li button.active {
+            background-color: #1e7e34;
+            font-weight: bold;
+        }
+        #content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            height: 100%;
+        }
+        .tool-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .tool-container h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        .ggb-element-container {
+            width: 100%;
+            max-width: 1100px; /* Ajustado al applet más ancho */
+            margin: 15px auto; /* Centrar y espaciar */
+        }
+        .definition {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-left: 5px solid #28a745;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h2>Nivelatorio Uno</h2>
+        <ul>
+            <li><button onclick="app.loadTool('introduccion')">Introducción</button></li>
+            <li><button onclick="app.loadTool('mcmMcd')">MCM y MCD</button></li>
+            <li><button onclick="app.loadTool('sumasRestas')">SUMAS Y RESTAS</button></li>
+            <li><button onclick="app.loadTool('operacionesCombinadas')">OPERACIONES COMBINADAS</button></li>
+            <li><button onclick="app.loadTool('sumasDosDIgitos')">SUMAS DE NUMEROS CON DOS DIGITOS</button></li>
+            <li><button onclick="app.loadTool('sumasMasDosDigitos')">SUMAS DE NUMEROS CON MAS DE DOS DIGITOS</button></li>
+            <li><button onclick="app.loadTool('sumasRestasFraccionarios')">SUMAS Y RESTAS CON FRACCIONARIOS</button></li>
+            <li><button onclick="app.loadTool('operacionesCombinadasFracciones')">COMBINANDO OPERACIONES CON FRACCIONES</button></li>
+            <li><button onclick="app.loadTool('problemasFracciones')">PROBLEMAS CON FRACCIONES</button></li>
+            <li><button onclick="app.loadTool('problemasReglaTresDirecta')">PROBLEMAS DE REGLA DE TRES DIRECTA</button></li>
+            <li><button onclick="app.loadTool('problemasProporcionalidad')">PROBLEMAS DE PROPORCIONALIDAD DIRECTA E INVERSA</button></li>
+            <li><button onclick="app.loadTool('problemasPerimetro')">PROBLEMAS DE PERIMETRO</button></li>
+            <li><button onclick="app.loadTool('problemasAreas')">PROBLEMAS DE AREAS</button></li>
+           
+        </ul>
+    </div>
+
+    <div id="content">
+        <div id="tool-content" class="tool-container">
+            <!-- El contenido de la herramienta se cargará aquí -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const toolContents = {
+            'introduccion': {
+                html: `<h3>Introducción a la Caja de Herramientas</h3>
+                    <p>Hace algún tiempo el profesor Carlos Andrés Escobar Guerra propuso la creación de unas cartillas para los cursos de matemáticas de la facultad de Ciencias y Biotecnología, la elaboración de las cartillas produjo la necesidad de tener las herramientas para desarrollar las actividades de dicha cartilla.</p>
+                    <p>Así es que se llegó a la creación de una caja de herramientas donde se encontraran aplicaciones de aritmética, matemáticas I, II y III, y aplicaciones más avanzadas, la caja de herramientas hace más dinámica la clase, hace que los estudiantes adquieran los saberes esenciales más rápidamente, depende del profesor y de los estudiantes no pasar por alto los detalles que conducen a la solución.</p>
+                    <p>Para solucionar muchos de los ejercicios y problemas no es necesario ser un gran estudiante en matemáticas, eso sí, debe saber interiorizar, entender los conceptos que ayudan a solucionar el problema y en la caja de herramientas encontrará los instrumentos que le ayudaran a solucionar los problemas; depende del alumno escoger la herramienta adecuada.</p>
+                    <p>Otra gran ventaja de esta caja de herramientas es que todas las aplicaciones están reunidas en un solo espacio virtual, pensadas y diseñadas especialmente para responder a las necesidades de nuestros estudiantes.</p>
+                    <p>Para su desarrollo, se utilizó tecnologías como R, LaTeX, Flexdashboard, Bookdown, Shiny y GeoGebra. El diseño visual de la página fue trabajado con HTML y CSS, y para hacerla más interactiva y dinámica incorporamos JavaScript.</p>
+                    <p>Se puede decir que el equipo de trabajo está conformado por el profesor Carlos Andrés Escobar Guerra, Pablo Andrés Guzmán, John Jairo Estrada Álvarez y Juan Albero Arias Quiceno. Gracias a la invaluable ayuda del profesor de estadística y programación Pablo Andrés Guzmán puesto que él inspiró la creación de un grupo de estudio en el cual compartía sus conocimientos de R, de otros programas y actualmente da su opinión acerca de las nuevas aplicaciones. John Jairo Estrada, el cerebro del proyecto, es el programador de todas las aplicaciones.</p>`,
+                scriptContent: null // No necesita script de GeoGebra
+            },
+            'mcmMcd': {
+                html: `<h3>MCM y MCD</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>MCM (Mínimo Común Múltiplo):</strong> Es el menor número entero positivo que es múltiplo de dos o más números dados.<br>
+                        <strong>MCD (Máximo Común Divisor):</strong> Es el mayor número entero positivo que divide exactamente a dos o más números dados.
+                    </p>
+                    <div id="ggb-elementMcmMcd" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppMcmMcd !== 'undefined' && ggbAppMcmMcd.remove) { ggbAppMcmMcd.remove(); }
+                    var ggbAppMcmMcd = new GGBApplet({
+                        "material_id":"vk8hp7y4", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppMcmMcd.inject('ggb-elementMcmMcd');`
+            },
+            'sumasRestas': {
+                html: `<h3>SUMAS Y RESTAS</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Suma:</strong> Operación aritmética que consiste en añadir o agregar cantidades para obtener un total.<br>
+                        <strong>Resta:</strong> Operación aritmética que consiste en quitar o sustraer una cantidad de otra para obtener la diferencia.
+                    </p>
+                    <div id="ggb-elementSumasRestas" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppSumasRestas !== 'undefined' && ggbAppSumasRestas.remove) { ggbAppSumasRestas.remove(); }
+                    var ggbAppSumasRestas = new GGBApplet({
+                        "material_id":"cxssptqb", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppSumasRestas.inject('ggb-elementSumasRestas');`
+            },
+            'operacionesCombinadas': {
+                html: `<h3>OPERACIONES COMBINADAS</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Operaciones Combinadas:</strong> Son expresiones matemáticas que incluyen varias operaciones aritméticas (suma, resta, multiplicación, división, potenciación) que deben resolverse siguiendo un orden específico de precedencia: primero paréntesis, luego potencias, después multiplicaciones y divisiones (de izquierda a derecha), y finalmente sumas y restas (de izquierda a derecha).
+                    </p>
+                    <div id="ggb-elementOperacionesCombinadas" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppOperacionesCombinadas !== 'undefined' && ggbAppOperacionesCombinadas.remove) { ggbAppOperacionesCombinadas.remove(); }
+                    var ggbAppOperacionesCombinadas = new GGBApplet({
+                        "material_id":"ptwwdcqx", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppOperacionesCombinadas.inject('ggb-elementOperacionesCombinadas');`
+            },
+            'sumasDosDIgitos': {
+                html: `<h3>SUMAS DE NUMEROS CON DOS DIGITOS</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Sumas de Números con Dos Dígitos:</strong> Son operaciones de adición que involucran números del 10 al 99. Estas sumas pueden requerir reagrupación (llevar) cuando la suma de las unidades es mayor o igual a 10. Es fundamental comprender el valor posicional de las decenas y unidades para realizar correctamente estas operaciones. Esta habilidad es esencial para desarrollar fluidez en operaciones aritméticas más complejas.
+                    </p>
+                    <div id="ggb-elementSumasDosDIgitos" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppSumasDosDIgitos !== 'undefined' && ggbAppSumasDosDIgitos.remove) { ggbAppSumasDosDIgitos.remove(); }
+                    var ggbAppSumasDosDIgitos = new GGBApplet({
+                        "material_id":"xrpjfu4f", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppSumasDosDIgitos.inject('ggb-elementSumasDosDIgitos');`
+            },
+            'sumasMasDosDigitos': {
+                html: `<h3>SUMAS DE NUMEROS CON MAS DE DOS DIGITOS</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Sumas de Números con Más de Dos Dígitos:</strong> Son operaciones de adición que involucran números de tres o más dígitos (centenas, millares, etc.). Estas sumas requieren un dominio sólido del valor posicional y pueden involucrar múltiples reagrupaciones (llevar) en diferentes posiciones. Es esencial alinear correctamente los números por su valor posicional y aplicar sistemáticamente el proceso de suma de derecha a izquierda, manejando las reagrupaciones cuando sea necesario.
+                    </p>
+                    <div id="ggb-elementSumasMasDosDigitos" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppSumasMasDosDigitos !== 'undefined' && ggbAppSumasMasDosDigitos.remove) { ggbAppSumasMasDosDigitos.remove(); }
+                    var ggbAppSumasMasDosDigitos = new GGBApplet({
+                        "material_id":"w6ztfh9n", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppSumasMasDosDigitos.inject('ggb-elementSumasMasDosDigitos');`
+            },
+            'sumasRestasFraccionarios': {
+                html: `<h3>SUMAS Y RESTAS CON FRACCIONARIOS</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Sumas y Restas con Fracciones:</strong> Para sumar o restar fracciones se deben seguir las siguientes reglas:<br>
+                        • <strong>Con igual denominador:</strong> Se suman o restan los numeradores y se conserva el denominador.<br>
+                        • <strong>Con diferente denominador:</strong> Se debe encontrar un denominador común (preferiblemente el mínimo común múltiplo), convertir las fracciones equivalentes y luego sumar o restar los numeradores.
+                    </p>
+                    <div id="ggb-elementSumasRestasFraccionarios" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppSumasRestasFraccionarios !== 'undefined' && ggbAppSumasRestasFraccionarios.remove) { ggbAppSumasRestasFraccionarios.remove(); }
+                    var ggbAppSumasRestasFraccionarios = new GGBApplet({
+                        "material_id":"abedabbc", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppSumasRestasFraccionarios.inject('ggb-elementSumasRestasFraccionarios');`
+            },
+            'operacionesCombinadasFracciones': {
+                html: `<h3>COMBINANDO OPERACIONES CON FRACCIONES</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Operaciones Combinadas con Fracciones:</strong> Son expresiones matemáticas que involucran múltiples operaciones aritméticas con números fraccionarios (suma, resta, multiplicación, división, potenciación). Se debe seguir el orden de precedencia: paréntesis, potencias, multiplicaciones y divisiones (de izquierda a derecha), y finalmente sumas y restas (de izquierda a derecha). Es fundamental simplificar las fracciones en cada paso para facilitar los cálculos.
+                    </p>
+                    <div id="ggb-elementOperacionesCombinadasFracciones" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppOperacionesCombinadasFracciones !== 'undefined' && ggbAppOperacionesCombinadasFracciones.remove) { ggbAppOperacionesCombinadasFracciones.remove(); }
+                    var ggbAppOperacionesCombinadasFracciones = new GGBApplet({
+                        "material_id":"abgrenf9", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppOperacionesCombinadasFracciones.inject('ggb-elementOperacionesCombinadasFracciones');`
+            },
+            'problemasFracciones': {
+                html: `<h3>PROBLEMAS CON FRACCIONES</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Problemas con Fracciones:</strong> Son situaciones de la vida cotidiana que requieren el uso de operaciones con fracciones para su solución. Estos problemas ayudan a aplicar los conceptos de fracciones en contextos reales, desarrollando habilidades de razonamiento matemático y resolución de problemas. Es importante identificar qué operación usar (suma, resta, multiplicación o división) según el contexto del problema.
+                    </p>
+                    <div id="ggb-elementProblemasFracciones" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppProblemasFracciones !== 'undefined' && ggbAppProblemasFracciones.remove) { ggbAppProblemasFracciones.remove(); }
+                    var ggbAppProblemasFracciones = new GGBApplet({
+                        "material_id":"wuwbjbdk", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppProblemasFracciones.inject('ggb-elementProblemasFracciones');`
+            },
+            'problemasReglaTresDirecta': {
+                html: `<h3>PROBLEMAS DE REGLA DE TRES DIRECTA</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Regla de Tres Directa:</strong> Es un método matemático que permite resolver problemas de proporcionalidad directa. Se utiliza cuando dos magnitudes son directamente proporcionales, es decir, cuando una aumenta la otra también aumenta en la misma proporción, o cuando una disminuye la otra también disminuye proporcionalmente. La fórmula básica es: si A es a B como C es a X, entonces X = (B × C) / A. Esta herramienta es fundamental para resolver problemas prácticos de la vida cotidiana.
+                    </p>
+                    <div id="ggb-elementProblemasReglaTresDirecta" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppProblemasReglaTresDirecta !== 'undefined' && ggbAppProblemasReglaTresDirecta.remove) { ggbAppProblemasReglaTresDirecta.remove(); }
+                    var ggbAppProblemasReglaTresDirecta = new GGBApplet({
+                        "material_id":"j7s4nv7h", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppProblemasReglaTresDirecta.inject('ggb-elementProblemasReglaTresDirecta');`
+            },
+            'problemasProporcionalidad': {
+                html: `<h3>PROBLEMAS DE PROPORCIONALIDAD DIRECTA E INVERSA</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Proporcionalidad Directa e Inversa:</strong> Son relaciones matemáticas fundamentales entre magnitudes. En la <strong>proporcionalidad directa</strong>, cuando una magnitud aumenta, la otra también aumenta en la misma proporción (y viceversa). En la <strong>proporcionalidad inversa</strong>, cuando una magnitud aumenta, la otra disminuye de manera proporcional. Estos conceptos son esenciales para resolver problemas prácticos que involucran velocidad y tiempo, trabajo y trabajadores, consumo y duración, entre otros.
+                    </p>
+                    <div id="ggb-elementProblemasProporcionalidad" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppProblemasProporcionalidad !== 'undefined' && ggbAppProblemasProporcionalidad.remove) { ggbAppProblemasProporcionalidad.remove(); }
+                    var ggbAppProblemasProporcionalidad = new GGBApplet({
+                        "material_id":"ztq5f85e", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppProblemasProporcionalidad.inject('ggb-elementProblemasProporcionalidad');`
+            },
+            'problemasPerimetro': {
+                html: `<h3>PROBLEMAS DE PERIMETRO</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Problemas de Perímetro:</strong> Son situaciones que requieren calcular el perímetro de diferentes figuras geométricas. El perímetro es la suma de las longitudes de todos los lados de una figura plana. Estos problemas ayudan a aplicar las fórmulas de perímetro en contextos reales, desarrollando habilidades de medición y cálculo geométrico. Es fundamental identificar la figura geométrica y aplicar la fórmula correspondiente.
+                    </p>
+                    <div id="ggb-elementProblemasPerimetro" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppProblemasPerimetro !== 'undefined' && ggbAppProblemasPerimetro.remove) { ggbAppProblemasPerimetro.remove(); }
+                    var ggbAppProblemasPerimetro = new GGBApplet({
+                        "material_id":"ddqfygcu", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppProblemasPerimetro.inject('ggb-elementProblemasPerimetro');`
+            },
+            'problemasAreas': {
+                html: `<h3>PROBLEMAS DE AREAS</h3>
+                    <p><strong>AUTOR:</strong> Javier Cayetano Rodríguez</p>
+                    <p class="definition">
+                        <strong>Problemas de Área:</strong> Son situaciones que requieren calcular el área de diferentes figuras geométricas. El área es la medida de la superficie ocupada por una figura plana, expresada en unidades cuadradas. Estos problemas ayudan a aplicar las fórmulas de área en contextos reales, desarrollando habilidades de medición y cálculo geométrico. Es fundamental identificar la figura geométrica (cuadrado, rectángulo, triángulo, círculo, etc.) y aplicar la fórmula correspondiente.
+                    </p>
+                    <div id="ggb-elementProblemasAreas" class="ggb-element-container" style="height:600px; max-width:1000px;"></div>`,
+                scriptContent: `
+                    if (typeof ggbAppProblemasAreas !== 'undefined' && ggbAppProblemasAreas.remove) { ggbAppProblemasAreas.remove(); }
+                    var ggbAppProblemasAreas = new GGBApplet({
+                        "material_id":"za7zemk5", "width": 1000, "height": 600, 
+                        "showToolBar": false, "showAlgebraInput": false, "showMenuBar": false, "appName": "classic"
+                    }, true);
+                    ggbAppProblemasAreas.inject('ggb-elementProblemasAreas');`
+            },
+            
+        };
+
+        const app = {
+            activeButton: null,
+            currentGgbScript: null,
+
+            loadTool: function(toolKey) {
+                const contentDiv = document.getElementById('tool-content');
+                const toolData = toolContents[toolKey];
+
+                if (!toolData) {
+                    contentDiv.innerHTML = '<h3>Error</h3><p>Herramienta no encontrada.</p>';
+                    return;
+                }
+
+                contentDiv.innerHTML = toolData.html; // Carga el HTML primero
+
+                // Asegurar que MathJax procese el nuevo contenido si hay fórmulas LaTeX
+                if (typeof MathJax !== "undefined") {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, contentDiv]);
+                }
+
+                if (toolData.scriptContent) {
+                    if (this.currentGgbScript && this.currentGgbScript.parentNode) {
+                        this.currentGgbScript.parentNode.removeChild(this.currentGgbScript);
+                    }
+                    
+                    const scriptEl = document.createElement('script');
+                    scriptEl.type = 'text/javascript';
+                    // Pequeño retraso para asegurar que el DOM esté listo para GeoGebra,
+                    // especialmente si el applet es grande o la máquina es lenta.
+                    scriptEl.textContent = `setTimeout(function() { ${toolData.scriptContent} }, 50);`;
+                    contentDiv.appendChild(scriptEl); 
+                    this.currentGgbScript = scriptEl;
+                } else {
+                     if (this.currentGgbScript && this.currentGgbScript.parentNode) {
+                        this.currentGgbScript.parentNode.removeChild(this.currentGgbScript);
+                        this.currentGgbScript = null;
+                    }
+                }
+
+                if (this.activeButton) {
+                    this.activeButton.classList.remove('active');
+                }
+                const buttons = document.querySelectorAll('#sidebar ul li button');
+                buttons.forEach(button => {
+                    if (button.getAttribute('onclick') === `app.loadTool('${toolKey}')`) {
+                        button.classList.add('active');
+                        this.activeButton = button;
+                    }
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstButton = document.querySelector('#sidebar ul li button');
+            if (firstButton) {
+                const initialToolKey = firstButton.getAttribute('onclick').match(/app.loadTool\('([^']+)'\)/)[1];
+                app.loadTool(initialToolKey);
+            }
+        });
+    </script>
+    <!-- Si tienes un chatbot, puedes añadir su script aquí también -->
+</body>
+</html>
